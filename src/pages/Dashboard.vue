@@ -30,29 +30,33 @@
             </a>
           </div>
           <slot>
-          <div class="boxSidebar">
-            <select id="bouton-select-ville" class="btn dropdown-toggle" name="city">
-                <option name="Le Mans" >Le Mans</option>
-                <option name="Paris" >Paris</option>
-                <option name="Nantes" >Nantes</option>
-                <option name="Lyon" >Lyon</option>
-                <option name="Lille" >Lille</option>
-            </select>
-            <button id="bouton-ville" class="btn" v-on:click="lanceTwitter()">
-              Valider
-            </button>
+            <div class="boxSidebar">
+              <p>{{$t('dashboard.city-selector')}}</p>
+              <select id="bouton-select-ville" class="btn dropdown-toggle" name="city">
+                  <option name="Le Mans" >Le Mans</option>
+                  <option name="Paris" >Paris</option>
+                  <option name="Nantes" >Nantes</option>
+                  <option name="Lyon" >Lyon</option>
+                  <option name="Lille" >Lille</option>
+              </select>
             </div>
           </slot>
           <slot>
-          <div class="boxSidebar">
-            <select id="bouton-select-langue" class="btn dropdown-toggle" name="city">
-                <option name="en">English</option>
-                <option name="sp">Espanol</option>
-                <option selected name="fr">Français</option>
-            </select>
-            <button id="bouton-langue" class="btn">
-              Valider
-            </button>
+            <div class="boxSidebar">
+              <p>{{$t('dashboard.language-selector')}}</p>
+              <select id="bouton-select-langue" class="btn dropdown-toggle" name="language">
+                  <option value="en">English</option>
+                  <option value="sp">Espanol</option>
+                  <option selected value="fr">Français</option>
+              </select>
+            </div>
+          </slot>
+          <slot>
+            <div class="boxSidebar">
+              <button id="bouton" class="btn" v-on:click="handleBouton()">
+                    Valider
+              </button>
+              <p id="test"></p>
             </div>
           </slot>
           <slot>
@@ -81,7 +85,7 @@
       
         <card style="width: 17rem;">
           <div slot="header" >
-            Meteo
+            <h5 class="card-category">{{$t('dashboard.meteo')}}</h5>
           </div>
 
             <div id="jour0" v-on:click="affinfmeteo(0)" class='mini_cadre_jour'>
@@ -120,7 +124,31 @@
 
         </card>
       </div>
-    
+
+      <div class="col-lg-4" :class="{'text-right': isRTL}"> <!-- Twitter -->
+
+        <card type="chart">
+            <template slot="header">
+              <h5 class="card-category">{{$t('dashboard.twitter')}}</h5>
+                <twitter id = "twi"></twitter>
+            </template>
+        </card>
+      </div>
+
+      <div class="col-lg-4" :class="{'text-right': isRTL}"> <!-- Wikipedia -->
+
+        <card type="chart">
+          <template slot="header">
+              <h5 class="card-category">Wikipedia</h5>
+              <div class="scrollbar">
+                <a id="titreWiki"></a>
+                <p id="coordWiki"></p>
+                <p id="descWiki"></p>
+              </div>
+          </template>
+        </card>
+      </div>
+
       <div class="col-lg-5" :class="{'text-right': isRTL}"> <!-- Blablacar -->
         <card style="width: 28rem;">
           <div id="choix1">Ville départ</div>
@@ -143,24 +171,6 @@
         </card>
       </div>
 
-      <div class="col-lg-4" :class="{'text-right': isRTL}"> <!-- Twitter -->
-
-        <card type="chart">
-            <template slot="header">
-              <h5 class="card-category">{{$t('dashboard.twitter')}}</h5>
-                <twitter id = "twi"></twitter>
-            </template>
-        </card>
-      </div>
-
-      <div class="col-lg-4" :class="{'text-right': isRTL}"> <!-- Wikipedia -->
-
-        <card type="chart">
-            <template slot="header">
-                <section class="searchResults"></section>
-            </template>
-        </card>
-      </div>
     </div>
 
   </div>
@@ -299,52 +309,12 @@
       }
     },
     methods: {
-      handleSubmit(event) {
-        event.preventDefault();
-        const input = document.querySelector('.search-input').value;
-        const searchQuery = input.trim();
-        fetchResults(searchQuery);
-      },
-
       httpGet(theUrl)
       {
           var xmlHttp = new XMLHttpRequest();
           xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
           xmlHttp.send( null );
           return xmlHttp.responseText;
-      },
-
-
-      // more on using wikipedia action=query https://www.mediawiki.org/wiki/API:Query
-      fetchResults(searchQuery) {
-          var json = JSON.parse(httpGet(`https://fr.wikipedia.org/w/api.php?action=query&list=search&prop=info&inprop=url&utf8=&format=json&origin=*&srlimit=1&srsearch=${searchQuery}`));
-          var search = json.query.search;
-          console.log(search[0]);
-          displayResults(search[0]);
-      },
-
-      // more on using wikipedia action=query https://www.mediawiki.org/wiki/API:Query
-      fetchText(searchQuery, pageId) {
-        var json = JSON.parse(httpGet(`https://fr.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=extracts&titles=${searchQuery}&redirects=1&exintro=1&explaintext=1`));
-        var pages = json.query.pages;
-        return pages[pageId];
-      },
-
-      // display resuts on the page
-      displayResults(results) {
-        const searchResults = document.querySelector('.searchResults');
-        searchResults.innerHTML = '';
-        const url = encodeURI(`https://fr.wikipedia.org/wiki/${results.title}`);
-        const text = fetchText(results.title, results.pageid);
-
-        searchResults.insertAdjacentHTML('beforeend',
-          `<div class="resultItem">
-            <h3 class="resultItem-title">
-              <a href="${url}" target="_blank" rel="noopener">${results.title}</a>
-            </h3>
-            <span class="resultItem-snippet">${text.extract}</span><br>
-          </div>`
-        );
       },
 
       initBigChart(index) {
@@ -369,13 +339,6 @@
         this.$refs.bigChart.updateGradients(chartData);
         this.bigLineChart.chartData = chartData;
         this.bigLineChart.activeIndex = index;
-      },
-      httpGet(theUrl)
-      {
-          var xmlHttp = new XMLHttpRequest();
-          xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
-          xmlHttp.send( null );
-          return xmlHttp.responseText;
       },
       affinfmeteo : function(nb){
         if(this.filtreOn == false){
@@ -549,6 +512,32 @@
           document.getElementById("twi").innerHTML = "<a class=\"twitter-timeline\" data-height=\"700\" data-theme=\"dark\" href=\"https://twitter.com/QuipoV/lists/lille?ref_src=twsrc%5Etfw\">A Twitter List by QuipoV</a>";
           default : break;
         }
+      },
+      // more on using wikipedia action=query https://www.mediawiki.org/wiki/API:Query
+      fetchResults(langue) {
+          var searchQuery = document.getElementById("bouton-select-ville").value;
+          var json = JSON.parse(this.httpGet(`https://${langue}.wikipedia.org/w/api.php?action=query&list=search&prop=info&inprop=url&utf8=&format=json&origin=*&srlimit=1&srsearch=${searchQuery}`));
+          var search = json.query.search;
+          var json2 = JSON.parse(this.httpGet(`https://${langue}.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=extracts&titles=${searchQuery}&redirects=1&exintro=1&explaintext=1`));
+          var pages = json2.query.pages;
+          var text = pages[search[0].pageid];
+          var json3 = JSON.parse(this.httpGet(`https://${langue}.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=coordinates&titles=${searchQuery}&utf8=1&colimit=1&coprop=`));
+          var longitude = json3.query.pages[search[0].pageid].coordinates[0].lon;
+          var latitude = json3.query.pages[search[0].pageid].coordinates[0].lat;
+          document.getElementById("titreWiki").href = `https://${langue}.wikipedia.org/wiki/${search[0].title}`;
+          document.getElementById("titreWiki").target = "_blank";
+          document.getElementById("titreWiki").innerHTML = search[0].title;
+          document.getElementById("coordWiki").innerHTML = "longitude = " + longitude + " et latitude = " + latitude;
+          document.getElementById("descWiki").innerHTML = text.extract;
+      },
+
+      handleBouton() {
+        var langue = document.getElementById("bouton-select-langue");
+        this.i18n = this.$i18n;
+        this.i18n.locale = langue.options[langue.selectedIndex].value;
+        document.getElementById("test").innerHTML = langue.options[langue.selectedIndex].value;
+        this.fetchResults(langue.options[langue.selectedIndex].value);
+        this.lanceTwitter();
       }
     },
     mounted() {
@@ -671,4 +660,11 @@
   .sidebar{
     margin-top: 3%;
   }
+
+  .scrollbar{
+    width:fit-content;
+    height:200px;
+    overflow: auto;
+  }
+
 </style>
