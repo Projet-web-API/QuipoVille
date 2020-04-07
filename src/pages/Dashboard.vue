@@ -46,7 +46,7 @@
               <p>{{$t('dashboard.language-selector')}}</p>
               <select id="bouton-select-langue" class="btn dropdown-toggle" name="language">
                   <option value="en">English</option>
-                  <option value="sp">Espanol</option>
+                  <option value="es">Espanol</option>
                   <option selected value="fr">Français</option>
               </select>
             </div>
@@ -54,18 +54,17 @@
           <slot>
             <div class="boxSidebar">
               <button id="bouton" class="btn" v-on:click="handleBouton()">
-                    Valider
+                    {{$t('dashboard.valide')}}
               </button>
-              <p id="test"></p>
             </div>
           </slot>
           <slot>
           <button id="bouton-contact" class="btn">
-          <a href="https://twitter.com/QuipoV" style="color: white;">Nous contacter</a>
+          <a href="https://twitter.com/QuipoV" style="color: white;">{{$t('dashboard.contact')}}</a>
           </button>
           </slot>
           <slot >
-            <p id="apropos">Ce site à été réalisé dans le cadre du projet de Licence 3 de la faculté d'informatique de Le Mans Université</p>
+            <p id="apropos">{{$t('dashboard.propos')}}</p>
           </slot>
           <ul class="nav">
             <!--By default vue-router adds an active class to each route link. This way the links are colored when clicked-->
@@ -139,7 +138,7 @@
 
         <card type="chart">
           <template slot="header">
-              <h5 class="card-category">Wikipedia</h5>
+              <h5 class="card-category">{{$t('dashboard.wikipedia')}}</h5>
               <div class="scrollbar">
                 <a id="titreWiki"></a>
                 <p id="coordWiki"></p>
@@ -151,12 +150,13 @@
 
       <div class="col-lg-5" :class="{'text-right': isRTL}"> <!-- Blablacar -->
         <card style="width: 28rem;">
-          <div id="choix1">Ville départ</div>
+          <h5 class="card-category">{{$t('dashboard.blablacar')}}</h5>
+          <div id="choix1">{{$t('dashboard.depart')}}</div>
           <input type="text" id="villed" name="ville départ">
           <br/><br/>
-          <div id="choix2"> Ville arrivé</div>
+          <div id="choix2">{{$t('dashboard.arrive')}}</div>
           <select name="ville arrivé" id="villea">
-              <option name="Peu importe">Peu importe</option>
+              <option name="Peu importe">{{$t('dashboard.direction')}}</option>
               <option name="Paris">Paris</option>
               <option name="Nantes">Nantes</option>
               <option name="Lyon">Lyon</option>
@@ -166,7 +166,7 @@
           <img src="../../public/img/fleches1.png" alt="échanger ville départ et arrivée" height="16" width="16" v-on:click="inverseVille()" v-on:mouseover="animation1()" v-on:mouseout="animation2()" id="fleches">
           
           <p id="test"></p>
-          <button id="bouton" type="button" v-on:click="choix()">Chercher</button>
+          <button id="bouton" type="button" v-on:click="choix()">{{$t('dashboard.valide')}}</button>
 
         </card>
       </div>
@@ -494,7 +494,7 @@
       },
         lanceTwitter(){
         var ville = document.getElementById("bouton-select-ville").value;
-        alert("Selection = "+ville)
+        //alert("Selection = "+ville)
         switch(ville){
           case "Le Mans":
           document.getElementById("twi").innerHTML = "<a class=\"twitter-timeline\" data-height=\"700\" data-theme=\"dark\" href=\"https://twitter.com/QuipoV/lists/vos-news-le-mans?ref_src=twsrc%5Etfw\">A Twitter List by QuipoV</a>";
@@ -535,7 +535,6 @@
         var langue = document.getElementById("bouton-select-langue");
         this.i18n = this.$i18n;
         this.i18n.locale = langue.options[langue.selectedIndex].value;
-        document.getElementById("test").innerHTML = langue.options[langue.selectedIndex].value;
         this.fetchResults(langue.options[langue.selectedIndex].value);
         this.lanceTwitter();
       }
@@ -556,7 +555,7 @@
     },
     beforeDestroy() {
       if (this.$rtl.isRTL) {
-        this.i18n.locale = 'en';
+        this.i18n.locale = 'fr';
         this.$rtl.disableRTL();
       }
     }

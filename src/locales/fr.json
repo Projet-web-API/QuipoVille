@@ -1,16 +1,26 @@
 {
     "dashboard": {
+
+      
+      "twitter": "Twitter",
+      "meteo": "Météo",
+      "wikipedia" : "Wikipédia",
+      "blablacar" : "Blablacar",
+      "language-selector": "Choississez une langue : ",
+      "city-selector": "Choississez une ville : ",
+      "depart": "Départ = ",
+      "arrive": "Arrivée = ",
+      "direction": "Toutes les directions",
+      "valide": "Valider",
+      "contact": "Nous contacter",
+      "propos": "Ce site à été réalisé dans le cadre du projet de Licence 3 de la faculté d'informatique de Le Mans Université",
+
+
       "completedTasks": "Tâches complétées",
       "dailySales": "Ventes journalières",
       "performance": "Performance",
       "simpleTable": "Tableau Simple",
       "totalShipments": "Expéditions totales",
-      "twitter": "Twitter",
-      "meteo": "Météo",
-      "language-selector": "Choississez une langue",
-      "city-selector": "Choississez une ville",
-      "depart": "Départ = ",
-      "arrive": "Arrivée = ",
       "chartCategories": [
         "Accounts",
         "Purchases",

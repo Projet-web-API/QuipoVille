@@ -1,16 +1,26 @@
 {
   "dashboard": {
+
+
+    "twitter": "Twitter",
+    "meteo": "Weather report",
+    "wikipedia" : "Wikipedia",
+    "blablacar" : "Blablacar",
+    "language-selector": "Choose a language : ",
+    "city-selector": "Choose a city : ",
+    "depart": "Departure = ",
+    "arrive": "Arrival = ",
+    "direction": "All directions",
+    "valide": "Confirm",
+    "contact": "Contact us",
+    "propos": "This website was created for a student project in the 3rd year Licence of computer science in Le Mans Université.",
+
+    
     "completedTasks": "Completed Tasks",
     "dailySales": "Hello",
     "performance": "Performance",
     "simpleTable": "Simple Table",
     "totalShipments": "Total Shipments",
-    "twitter": "Twitter",
-    "meteo": "Weather report",
-    "language-selector": "Choose a language",
-    "city-selector": "Choose a city",
-    "depart": "Departure = ",
-    "arrive": "Arrival = ",
     "chartCategories": [
       "Accounts",
       "Purchases",
