@@ -160,26 +160,27 @@
 
       <div class="col-lg-5" :class="{'text-right': isRTL}"> <!-- Blablacar -->
         <card style="width: 28rem;">
-          <h5 class="card-category">{{$t('dashboard.blablacar')}}</h5>
-          <div id="choix1">{{$t('dashboard.depart')}}</div>
-          <p id="villed">{{$t('dashboard.lemans')}}</p>
+          
+          <h4 id="choix1">Ville départ : Le Mans</h4>
           <br/>
-          <div id="choix2">{{$t('dashboard.arrive')}}</div>
+          <h4 id="choix2"> Ville arrivé</h4>
           <select name="ville arrivé" id="villea">
-              <option value="Peu importe">{{$t('dashboard.direction')}}</option>
-              <option >{{$t('dashboard.lemans')}}</option>
-              <option >{{$t('dashboard.paris')}}</option>
-              <option >{{$t('dashboard.nantes')}}</option>
-              <option >{{$t('dashboard.lyon')}}</option>
-              <option >{{$t('dashboard.lille')}}</option>
-              <option >{{$t('dashboard.bordeaux')}}</option>
-              <option >{{$t('dashboard.marseille')}}</option>
-              <option >{{$t('dashboard.toulouse')}}</option>
+              <option name="Peu importe">Peu importe</option>
+              <option name="Paris">Paris</option>
+              <option name="Nantes">Nantes</option>
+              <option name="Lyon">Lyon</option>
+              <option name="Lille">Lille</option>
+              <option name="Le Mans">Le Mans</option>
           </select>
           <img src="../../public/img/fleches1.png" alt="échanger ville départ et arrivée" height="16" width="16" v-on:click="inverseVille()" v-on:mouseover="animation1()" v-on:mouseout="animation2()" id="fleches">
           <br/>
-          <p id="test"></p>
-          <button id="bouton" type="button" v-on:click="choix()">{{$t('dashboard.valide')}}</button>
+          <input type="text" id="newVille" name="newVille">
+          <button id="bouton" type="button" v-on:click="ajoutVille()">ajouter une ville</button>
+          <br/>
+          <button id="bouton" type="button" v-on:click="choix()">Chercher</button>
+          <br/>
+          <p id="listeTrajet"></p>
+          
 
         </card>
       </div>
@@ -545,6 +546,12 @@
           document.getElementById("titreWiki").innerHTML = search[0].title;
           document.getElementById("descWiki").innerHTML = text.extract;
       },
+      
+       ajoutVille(){
+        var liste = document.getElementById("villea").innerHTML;
+        var newV = document.getElementById("newVille").value;
+        document.getElementById("villea").innerHTML = liste + "<option name=\""+newV+"\" selected >"+newV+"</option>";
+      }, 
 
       loadMapScenario() {
         var map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
