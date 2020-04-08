@@ -33,11 +33,14 @@
             <div class="boxSidebar">
               <p>{{$t('dashboard.city-selector')}}</p>
               <select id="bouton-select-ville" class="btn dropdown-toggle" name="city">
-                  <option name="Le Mans" >Le Mans</option>
-                  <option name="Paris" >Paris</option>
-                  <option name="Nantes" >Nantes</option>
-                  <option name="Lyon" >Lyon</option>
-                  <option name="Lille" >Lille</option>
+                  <option >{{$t('dashboard.lemans')}}</option>
+                  <option >{{$t('dashboard.paris')}}</option>
+                  <option >{{$t('dashboard.nantes')}}</option>
+                  <option >{{$t('dashboard.lyon')}}</option>
+                  <option >{{$t('dashboard.lille')}}</option>
+                  <option >{{$t('dashboard.bordeaux')}}</option>
+                  <option >{{$t('dashboard.marseille')}}</option>
+                  <option >{{$t('dashboard.toulouse')}}</option>
               </select>
             </div>
           </slot>
@@ -45,9 +48,9 @@
             <div class="boxSidebar">
               <p>{{$t('dashboard.language-selector')}}</p>
               <select id="bouton-select-langue" class="btn dropdown-toggle" name="language">
-                  <option value="en">English</option>
-                  <option value="es">Espanol</option>
-                  <option selected value="fr">Français</option>
+                  <option selected value="fr">{{$t('dashboard.france')}}</option>
+                  <option value="en">{{$t('dashboard.angleterre')}}</option>
+                  <option value="es">{{$t('dashboard.espagne')}}</option>
               </select>
             </div>
           </slot>
@@ -141,10 +144,17 @@
               <h5 class="card-category">{{$t('dashboard.wikipedia')}}</h5>
               <div class="scrollbar">
                 <a id="titreWiki"></a>
-                <p id="coordWiki"></p>
                 <p id="descWiki"></p>
               </div>
           </template>
+        </card>
+      </div>
+
+      <div class="col-lg-6" :class="{'text-right': isRTL}"> <!-- Map Bing -->
+        <card style="width: 28rem; height:28rem;">
+          <div id='printoutPanel'></div>
+          <h5 class="card-category">{{$t('dashboard.map')}}</h5> 
+          <div id='myMap' style='width: 100%; height: 100%;'></div>
         </card>
       </div>
 
@@ -152,19 +162,22 @@
         <card style="width: 28rem;">
           <h5 class="card-category">{{$t('dashboard.blablacar')}}</h5>
           <div id="choix1">{{$t('dashboard.depart')}}</div>
-          <input type="text" id="villed" name="ville départ">
-          <br/><br/>
+          <p id="villed">{{$t('dashboard.lemans')}}</p>
+          <br/>
           <div id="choix2">{{$t('dashboard.arrive')}}</div>
           <select name="ville arrivé" id="villea">
-              <option name="Peu importe">{{$t('dashboard.direction')}}</option>
-              <option name="Paris">Paris</option>
-              <option name="Nantes">Nantes</option>
-              <option name="Lyon">Lyon</option>
-              <option name="Lille">Lille</option>
-              <option name="Le Mans">Le Mans</option>
+              <option value="Peu importe">{{$t('dashboard.direction')}}</option>
+              <option >{{$t('dashboard.lemans')}}</option>
+              <option >{{$t('dashboard.paris')}}</option>
+              <option >{{$t('dashboard.nantes')}}</option>
+              <option >{{$t('dashboard.lyon')}}</option>
+              <option >{{$t('dashboard.lille')}}</option>
+              <option >{{$t('dashboard.bordeaux')}}</option>
+              <option >{{$t('dashboard.marseille')}}</option>
+              <option >{{$t('dashboard.toulouse')}}</option>
           </select>
           <img src="../../public/img/fleches1.png" alt="échanger ville départ et arrivée" height="16" width="16" v-on:click="inverseVille()" v-on:mouseover="animation1()" v-on:mouseout="animation2()" id="fleches">
-          
+          <br/>
           <p id="test"></p>
           <button id="bouton" type="button" v-on:click="choix()">{{$t('dashboard.valide')}}</button>
 
@@ -202,8 +215,10 @@
         JsonMeteo : null,
         Jsonlemans : JsonLeMans,
         filtreOn : false,
-        villed : "Peu importe",
+        villed : "Le Mans",
         villea : "Peu importe",
+        longitude : 0.196944,
+        latitude : 48.004167,
         theUrl : null,
         inverser : false,
         plus : new Array(),
@@ -388,11 +403,10 @@
       console.log("test");
       },
       choix(){
-          this.villed = document.getElementById("villed").value;
           this.villea = document.getElementById("villea").value;
           console.log("ville départ = " + this.villed + "ville arrivé = "+ this.villea)
           if(this.villea == this.villed){
-              alert("veuillez choisir deux villes différentes");
+              alert(this.$t('dashboard.mville'));
           }
           else if(this.inverser == true){
               if(this.villea == "Peu importe"){
@@ -435,7 +449,7 @@
 
       search(){
           var json = JSON.parse(this.httpGet(this.theURL))
-          var text = ""
+          var text = "<table style='width:100%'><tr><th></th><th>" + this.$t('dashboard.depart') + "</th><th>" + this.$t('dashboard.arrive') + "</th></tr>";
           var taille = json['trips'].length
           console.log(taille)
           
@@ -448,22 +462,22 @@
           this.plus.forEach(this.logArrayElements);
           
           for(i = 0; i < taille; i++){
-              text += "<div id=\"texte"+i+"\"> Départ = " + json['trips'][i.toString()]['departure_place']['city_name']+",arrivée = " + json['trips'][i.toString()]['arrival_place']['city_name'] +"   " + this.plus[i] +"</div>"
-              
+              text += "<tr><th>" + i + "<\th><th>" + json['trips'][i.toString()]['departure_place']['city_name'] + "</th><th>" + json['trips'][i.toString()]['arrival_place']['city_name'] + this.plus[i] +"</th></tr>";
           }
+          text += "</table>";
           document.getElementById("test").innerHTML = text
       },
 
       inverseVille(){
           if(this.inverser == false){
               this.inverser = true;
-              document.getElementById("choix1").innerHTML="Ville arrivé"
-              document.getElementById("choix2").innerHTML="Ville départ"
+              document.getElementById("choix1").innerHTML= this.$t('dashboard.arrive');
+              document.getElementById("choix2").innerHTML= this.$t('dashboard.depart');
           }
           else{
               this.inverser = false;
-              document.getElementById("choix1").innerHTML="Ville départ"
-              document.getElementById("choix2").innerHTML="Ville arrivé"
+              document.getElementById("choix1").innerHTML= this.$t('dashboard.depart');
+              document.getElementById("choix2").innerHTML= this.$t('dashboard.arrive');
           }
       },
 
@@ -494,22 +508,24 @@
       },
         lanceTwitter(){
         var ville = document.getElementById("bouton-select-ville").value;
+        var twi = document.getElementById("twi");
+        twi.innerHTML = "";
         //alert("Selection = "+ville)
         switch(ville){
           case "Le Mans":
-          document.getElementById("twi").innerHTML = "<a class=\"twitter-timeline\" data-height=\"700\" data-theme=\"dark\" href=\"https://twitter.com/QuipoV/lists/vos-news-le-mans?ref_src=twsrc%5Etfw\">A Twitter List by QuipoV</a>";
+            twi.innerHTML = "<a class=\"twitter-timeline\" data-height=\"700\" data-theme=\"dark\" href=\"https://twitter.com/QuipoV/lists/vos-news-le-mans?ref_src=twsrc%5Etfw\">A Twitter List by QuipoV</a>";
           break;
           case "Paris":
-          document.getElementById("twi").innerHTML = "<a class=\"twitter-timeline\" data-height=\"700\" data-theme=\"dark\" href=\"https://twitter.com/QuipoV/lists/paris?ref_src=twsrc%5Etfw\">A Twitter List by QuipoV</a>";
+            twi.innerHTML = "<a class=\"twitter-timeline\" data-height=\"700\" data-theme=\"dark\" href=\"https://twitter.com/QuipoV/lists/paris?ref_src=twsrc%5Etfw\">A Twitter List by QuipoV</a>";
           break;
           case "Nantes":
-          document.getElementById("twi").innerHTML = "<a class=\"twitter-timeline\" data-height=\"700\" data-theme=\"dark\" href=\"https://twitter.com/QuipoV/lists/nantes?ref_src=twsrc%5Etfw\">A Twitter List by QuipoV</a>";
+            twi.innerHTML = "<a class=\"twitter-timeline\" data-height=\"700\" data-theme=\"dark\" href=\"https://twitter.com/QuipoV/lists/nantes?ref_src=twsrc%5Etfw\">A Twitter List by QuipoV</a>";
           break;
           case "Lyon":
-          document.getElementById("twi").innerHTML = "<a class=\"twitter-timeline\" data-height=\"700\" data-theme=\"dark\" href=\"https://twitter.com/QuipoV/lists/lyon?ref_src=twsrc%5Etfw\">A Twitter List by QuipoV</a>";
+            twi.innerHTML = "<a class=\"twitter-timeline\" data-height=\"700\" data-theme=\"dark\" href=\"https://twitter.com/QuipoV/lists/lyon?ref_src=twsrc%5Etfw\">A Twitter List by QuipoV</a>";
           break;
           case "Lille":
-          document.getElementById("twi").innerHTML = "<a class=\"twitter-timeline\" data-height=\"700\" data-theme=\"dark\" href=\"https://twitter.com/QuipoV/lists/lille?ref_src=twsrc%5Etfw\">A Twitter List by QuipoV</a>";
+            twi.innerHTML = "<a class=\"twitter-timeline\" data-height=\"700\" data-theme=\"dark\" href=\"https://twitter.com/QuipoV/lists/lille?ref_src=twsrc%5Etfw\">A Twitter List by QuipoV</a>";
           default : break;
         }
       },
@@ -522,25 +538,38 @@
           var pages = json2.query.pages;
           var text = pages[search[0].pageid];
           var json3 = JSON.parse(this.httpGet(`https://${langue}.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=coordinates&titles=${searchQuery}&utf8=1&colimit=1&coprop=`));
-          var longitude = json3.query.pages[search[0].pageid].coordinates[0].lon;
-          var latitude = json3.query.pages[search[0].pageid].coordinates[0].lat;
+          this.longitude = json3.query.pages[search[0].pageid].coordinates[0].lon;
+          this.latitude = json3.query.pages[search[0].pageid].coordinates[0].lat;
           document.getElementById("titreWiki").href = `https://${langue}.wikipedia.org/wiki/${search[0].title}`;
           document.getElementById("titreWiki").target = "_blank";
           document.getElementById("titreWiki").innerHTML = search[0].title;
-          document.getElementById("coordWiki").innerHTML = "longitude = " + longitude + " et latitude = " + latitude;
           document.getElementById("descWiki").innerHTML = text.extract;
+      },
+
+      loadMapScenario() {
+        var map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
+            /* No need to set credentials if already passed in URL */
+            center: new Microsoft.Maps.Location(this.latitude, this.longitude),
+            mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+            zoom: 10
+        });
       },
 
       handleBouton() {
         var langue = document.getElementById("bouton-select-langue");
         this.i18n = this.$i18n;
         this.i18n.locale = langue.options[langue.selectedIndex].value;
+        this.villed = document.getElementById("bouton-select-ville").value;
+        document.getElementById("villed").innerHTML = document.getElementById("bouton-select-ville").value;
         this.fetchResults(langue.options[langue.selectedIndex].value);
         this.lanceTwitter();
+        this.loadMapScenario();
       }
     },
     mounted() {
       this.lanceTwitter();
+      this.fetchResults("fr");
+      this.loadMapScenario();
       //temporaire
       //this.chargerMeteo("Le Mans")
       
