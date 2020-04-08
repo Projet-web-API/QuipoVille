@@ -178,6 +178,9 @@
           </select>
           <img src="../../public/img/fleches1.png" alt="échanger ville départ et arrivée" height="16" width="16" v-on:click="inverseVille()" v-on:mouseover="animation1()" v-on:mouseout="animation2()" id="fleches">
           <br/>
+          <input type="text" id="newVille" name="newVille">
+          <button id="bouton" type="button" v-on:click="ajoutVille()">{{$t('dashboard.aville')}}</button>
+          <br/>
           <p id="test"></p>
           <button id="bouton" type="button" v-on:click="choix()">{{$t('dashboard.valide')}}</button>
 
@@ -506,6 +509,14 @@
           console.log("tu as cliqué sur le plus " + i)
           document.getElementById("texte"+i).innerHTML = "Départ à "+json['trips'][i]['departure_place']['city_name']+", "+json['trips'][i]['departure_place']['address']+" le "+json['trips'][i]['departure_date']+",arrivée = " + json['trips'][i]['arrival_place']['city_name']
       },
+
+      ajoutVille(){
+        var liste = document.getElementById("villea").innerHTML;
+        var newV = document.getElementById("newVille").value;
+        document.getElementById("villea").innerHTML = liste + "<option name=\""+newV+"\" selected >"+newV+"</option>";
+        this.choix();
+      },
+
         lanceTwitter(){
         var ville = document.getElementById("bouton-select-ville").value;
         var twi = document.getElementById("twi");
