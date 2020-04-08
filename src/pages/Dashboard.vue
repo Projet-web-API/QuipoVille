@@ -179,6 +179,7 @@
           <br/>
           <button id="bouton" type="button" v-on:click="choix()">Chercher</button>
           <br/>
+          <br/>
           <p id="listeTrajet"></p>
           
 
@@ -551,6 +552,7 @@
         var liste = document.getElementById("villea").innerHTML;
         var newV = document.getElementById("newVille").value;
         document.getElementById("villea").innerHTML = liste + "<option name=\""+newV+"\" selected >"+newV+"</option>";
+        this.choix();
       }, 
 
       loadMapScenario() {
